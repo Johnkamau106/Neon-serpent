@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Serpent</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>NEON SERPENT</h1>
+    <div class="game-wrapper">
+        <div class="game-container">
+            <div class="score-container">
+                <div id="score">Score: 0</div>
+                <div id="highScore">High Score: 0</div>
+            </div>
+            <div id="gameBoard"></div>
+            <div class="controls">
+                <div class="d-pad">
+                    <button id="up">↑</button>
+                    <button id="left">←</button>
+                    <button id="down">↓</button>
+                    <button id="right">→</button>
+                </div>
+                <button id="pause">Pause</button>
+            </div>
+    <audio id="hitWallSound" src="path/to/hit_wall_sound.mp3" preload="auto"></audio>
+    <audio id="eatFoodSound" src="path/to/eat_food_sound.mp3" preload="auto"></audio>
+    <script src="script.js"></script>
+</body>
+</html>
