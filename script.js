@@ -1,6 +1,9 @@
-const gameBoard = document.getElementById('gameBoard');
-const scoreDisplay = document.getElementById('score');
-const highScoreDisplay = document.getElementById('highScore');
+let gameBoard;
+let scoreDisplay;
+let highScoreDisplay;
+let gameOverOverlay;
+let finalScoreDisplay;
+let continueButton;
 
 const gridSize = 20;
 let snake = [{ x: 10, y: 10 }];
@@ -16,10 +19,12 @@ function main() {
     if (isPaused) return;
 
     if (!gameRunning) {
+        console.log("Game Over detected. Attempting to show overlay.");
         clearInterval(gameInterval);
         updateHighScore();
-        alert(`Game Over! Your score: ${score}. High Score: ${highScore}`);
-        resetGame();
+        finalScoreDisplay.textContent = `Your score: ${score}. High Score: ${highScore}`;
+        gameOverOverlay.classList.add('visible');
+        console.log("Overlay class added.");
         return;
     }
 
@@ -90,18 +95,21 @@ function onSnake(position) {
 
 function checkCollision() {
     const head = snake[0];
+    console.log("checkCollision() called. Snake head: (" + head.x + ", " + head.y + ")");
 
     if (
         head.x < 1 || head.x > gridSize ||
         head.y < 1 || head.y > gridSize
     ) {
         gameRunning = false;
+        console.log("Collision with wall. gameRunning set to false.");
         document.getElementById('hitWallSound').play();
     }
 
     for (let i = 1; i < snake.length; i++) {
         if (head.x === snake[i].x && head.y === snake[i].y) {
             gameRunning = false;
+            console.log("Collision with self. gameRunning set to false.");
             document.getElementById('hitWallSound').play();
             break;
         }
@@ -143,11 +151,24 @@ document.addEventListener('keydown', e => {
     }
 });
 
-document.getElementById('up').addEventListener('click', () => { if (direction !== 'down') direction = 'up'; });
-document.getElementById('down').addEventListener('click', () => { if (direction !== 'up') direction = 'down'; });
-document.getElementById('left').addEventListener('click', () => { if (direction !== 'right') direction = 'left'; });
-document.getElementById('right').addEventListener('click', () => { if (direction !== 'left') direction = 'right'; });
-document.getElementById('pause').addEventListener('click', togglePause);
+document.addEventListener('DOMContentLoaded', () => {
+    gameBoard = document.getElementById('gameBoard');
+    scoreDisplay = document.getElementById('score');
+    highScoreDisplay = document.getElementById('highScore');
+    gameOverOverlay = document.getElementById('gameOverOverlay');
+    finalScoreDisplay = document.getElementById('finalScore');
+    continueButton = document.getElementById('continueButton');
+
+    document.getElementById('up').addEventListener('click', () => { if (direction !== 'down') direction = 'up'; });
+    document.getElementById('down').addEventListener('click', () => { if (direction !== 'up') direction = 'down'; });
+    document.getElementById('left').addEventListener('click', () => { if (direction !== 'right') direction = 'left'; });
+    document.getElementById('right').addEventListener('click', () => { if (direction !== 'left') direction = 'right'; });
+    document.getElementById('pause').addEventListener('click', togglePause);
+    continueButton.addEventListener('click', resetGame);
+
+    highScoreDisplay.textContent = `High Score: ${highScore}`;
+    gameInterval = setInterval(main, 200);
+});
 
 function resetGame() {
     snake = [{ x: 10, y: 10 }];
@@ -159,9 +180,7 @@ function resetGame() {
     isPaused = false;
     const pauseButton = document.getElementById('pause');
     pauseButton.textContent = 'Pause';
+    gameOverOverlay.classList.remove('visible');
     clearInterval(gameInterval);
     gameInterval = setInterval(main, 200);
 }
-
-highScoreDisplay.textContent = `High Score: ${highScore}`;
-gameInterval = setInterval(main, 200);
